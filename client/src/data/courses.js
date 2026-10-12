@@ -1,0 +1,111 @@
+/*
+  코스 데이터 — 여기에 자료를 추가/수정하세요.
+  - thumb/hero/map: 이미지 파일을 client/public/img 폴더에 넣고 '/img/파일이름' 으로 적으면
+    '자료 삽입 영역' 대신 표시됩니다 (null 이면 빈칸 유지). 반드시 '/' 로 시작해야 상세 페이지에서도 보입니다.
+  - info: 미정 항목은 null 로 두면 '입력 예정'으로 표시됩니다
+  - stops(경유지)·stories(이야기)에 콘텐츠를 연결하세요
+*/
+export const COURSES = [
+  {
+    id: 'gyeongju',
+    region: '경주',
+    theme: '신라 천년',
+    title: '신라 천년의 보물길',
+    summary: '천년 고도 경주에 잠든 신라의 신화와 보물을 따라 걷는 길.',
+    thumb: '/img/poster-gyeongju.jpg',
+    hero: '/img/poster-gyeongju.jpg',
+    map: '/img/app-course.jpg',
+    info: { 거리: null, 소요시간: null, 난이도: null, 집결지: null },
+    stops: [
+      { where: '감포 대왕암', name: '만파식적', desc: '죽어서도 나라를 지킨 문무왕과, 온갖 파도를 잠재우는 피리 이야기.' },
+      { where: '국립경주박물관', name: '에밀레종', desc: '어미를 부르듯 운다는 종에 깃든 슬픈 전설. (역사 기록 없는 민간 전설)' },
+      { where: '경주 남산', name: '처용', desc: '노래와 춤으로 역신을 물리친 처용, 문에 붙인 얼굴 부적의 유래.' },
+    ],
+    stories: ['만파식적', '에밀레종', '처용', '김현감호', '지귀', '선덕여왕의 지혜'],
+  },
+  {
+    id: 'jeju',
+    region: '제주',
+    theme: '신들의 섬',
+    title: '신들의 섬, 제주 신화 기행',
+    summary: '설문대할망이 빚은 섬에서 제주 본풀이의 신들을 만나는 길.',
+    thumb: null,
+    hero: null,
+    map: null,
+    info: { 거리: null, 소요시간: null, 난이도: null, 집결지: null },
+    stops: [
+      { where: '한라산', name: '설문대할망', desc: '치마폭 흙으로 오름과 한라산을 빚은 거대한 창조 여신.' },
+      { where: '삼성혈', name: '탐라의 시조', desc: '땅에서 솟은 세 신인이 탐라국을 세운 제주 시조 신화.' },
+      { where: '김녕사굴', name: '김녕사굴', desc: '해마다 처녀를 제물로 받던 큰 구렁이를 물리친 이야기.' },
+    ],
+    stories: ['설문대할망', '자청비', '문전본풀이', '영등할망', '삼성혈'],
+  },
+  {
+    id: 'buyeo',
+    region: '부여·공주',
+    theme: '백제의 마지막',
+    title: '백제의 노을을 걷다',
+    summary: '무너진 백제의 마지막 이야기를 백마강을 따라 되짚는 길.',
+    thumb: '/img/map-region.jpg',
+    hero: '/img/poster-region.jpg',
+    map: '/img/app-buyeo.jpg',
+    info: { 거리: null, 소요시간: null, 난이도: null, 집결지: null },
+    stops: [
+      { where: '부소산성', name: '낙화암', desc: '백제가 무너지던 날, 꽃잎 지듯 강으로 몸을 던진 궁녀들의 자리.' },
+      { where: '공주 금강', name: '곰나루', desc: '곰과 사람의 슬픈 이야기가 담긴 웅진(곰나루)의 유래.' },
+      { where: '논산 황산벌', name: '계백', desc: '오천 결사대를 이끌고 마지막까지 싸운 백제 명장의 이야기.' },
+    ],
+    stories: ['낙화암', '조룡대와 백마강', '곰나루', '계백과 황산벌', '고란사 약수'],
+  },
+  {
+    id: 'seorak',
+    region: '강원·설악',
+    theme: '산과 바위',
+    title: '산이 들려주는 전설',
+    summary: '설악의 기암과 고찰에 깃든 전설을 따라 오르는 길.',
+    thumb: '/img/poster-chuncheon.jpg',
+    hero: '/img/poster-chuncheon.jpg',
+    map: '/img/app-chuncheon.jpg',
+    info: { 거리: null, 소요시간: null, 난이도: null, 집결지: null },
+    stops: [
+      { where: '설악산', name: '울산바위', desc: '금강산에 늦어 자리를 얻지 못하고 눌러앉은 큰 바위 이야기.' },
+      { where: '계조암', name: '흔들바위', desc: '밀면 흔들려도 결코 떨어지지 않는다는 명물 바위.' },
+      { where: '낙산사', name: '홍련암', desc: '의상대사 앞 바다에 붉은 연꽃이 피어올랐다는 창건 설화.' },
+    ],
+    stories: ['울산바위', '흔들바위', '오세암', '낙산사 홍련암', '대관령 국사성황'],
+  },
+  {
+    id: 'honam',
+    region: '전라',
+    theme: '사랑과 영웅',
+    title: '남도의 이야기 길',
+    summary: '견훤의 탄생에서 춘향의 사랑까지, 남도에 흐르는 이야기.',
+    thumb: null,
+    hero: null,
+    map: null,
+    info: { 거리: null, 소요시간: null, 난이도: null, 집결지: null },
+    stops: [
+      { where: '남원 광한루', name: '춘향전', desc: '신분을 뛰어넘은 춘향과 몽룡의 사랑, 오작교의 무대.' },
+      { where: '김제 벽골제', name: '단야 낭자', desc: '둑을 지키려 스스로를 바친 처녀 단야의 이야기.' },
+      { where: '진도 바닷길', name: '신비의 바닷길', desc: '가족을 만나려 빌자 바다가 갈라졌다는 뽕할머니 전설.' },
+    ],
+    stories: ['춘향전', '견훤 탄생', '정읍사', '김제 벽골제', '진도 신비의 바닷길'],
+  },
+  {
+    id: 'fairy',
+    region: '기타',
+    theme: '옛이야기',
+    title: '누구나 아는 옛이야기 마당',
+    summary: '온 가족이 함께 듣는 정겨운 전래동화를 테마로 엮은 길.',
+    thumb: null,
+    hero: null,
+    map: null,
+    info: { 거리: null, 소요시간: null, 난이도: null, 집결지: null },
+    stops: [
+      { where: '이야기 마당', name: '해와 달이 된 오누이', desc: '동아줄을 타고 하늘로 올라 해와 달이 된 오누이 이야기.' },
+      { where: '이야기 마당', name: '선녀와 나무꾼', desc: '날개옷을 감춘 나무꾼과 하늘로 떠난 선녀의 애틋한 이야기.' },
+      { where: '이야기 마당', name: '흥부와 놀부', desc: '제비가 물어다 준 박씨로 갈린 두 형제의 이야기.' },
+    ],
+    stories: ['해와 달이 된 오누이', '선녀와 나무꾼', '흥부와 놀부', '콩쥐팥쥐', '혹부리 영감'],
+  },
+];

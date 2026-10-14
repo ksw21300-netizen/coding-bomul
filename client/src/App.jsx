@@ -4,7 +4,6 @@ import SiteLayout from './components/SiteLayout.jsx';
 import AdminPage from './pages/AdminPage.jsx';
 import ApplicationDetailPage from './pages/ApplicationDetailPage.jsx';
 import ApplyPage from './pages/ApplyPage.jsx';
-import CourseCreatePage from './pages/CourseCreatePage.jsx';
 import CourseListPage from './pages/CourseListPage.jsx';
 import LegendCoursesPage from './pages/LegendCoursesPage.jsx';
 import CourseDetailPage from './pages/CourseDetailPage.jsx';
@@ -31,7 +30,7 @@ function App() {
         <Route path="admin" element={<AdminPage />} />
         <Route path="admin/applications/:id" element={<ApplicationDetailPage />} />
         <Route path="admin/courses" element={<CourseListPage />} />
-        <Route path="admin/courses/new" element={<CourseCreatePage />} />
+        <Route path="admin/courses/new" element={<LegendCoursesPage />} />
         <Route path="admin/legend-courses" element={<LegendCoursesPage />} />
         <Route element={<SiteLayout />}>
           <Route path="login" element={<LoginPage />} />

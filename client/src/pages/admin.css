@@ -699,6 +699,35 @@
   white-space: normal;
 }
 
+.admin-course-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-course-edit {
+  padding: 6px 10px;
+  border: 1px solid #d7deea;
+  border-radius: 8px;
+  background: #fff;
+  color: #1c2430;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.admin-course-edit:hover {
+  background: #f8fafc;
+}
+
+.admin-course-blank {
+  display: inline-block;
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  background: #f2f4f7;
+}
+
 .admin-course-delete {
   display: grid;
   place-items: center;
@@ -744,8 +773,14 @@
 
 .legend-stop {
   display: grid;
-  grid-template-columns: 0.8fr 0.8fr 1.4fr;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
+  margin-bottom: 8px;
+}
+
+.legend-stop input[name='desc'],
+.legend-stop input[name='addr'] {
+  grid-column: 1 / -1;
 }
 
 .legend-stop input {

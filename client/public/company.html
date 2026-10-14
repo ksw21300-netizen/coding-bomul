@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>회사 정보 · 우후 컴퍼니</title>
+<style>
+:root{
+  --bg:#FBFAF7; --fg:#1F2328; --muted:#5D666F; --line:#E2DFD8;
+  --accent:#5B3E9B; --panel:#F4F2EC;
+  --f-ui:"Pretendard","IBM Plex Sans KR",system-ui,-apple-system,"Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#14181C; --fg:#E7E4DE; --muted:#9BA5AE; --line:#2C343B;
+         --accent:#9B82E0; --panel:#1B2127; color-scheme:dark }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-ui);
+  line-height:1.72;font-size:15px;-webkit-text-size-adjust:100%}
+.wrap{max-width:720px;margin:0 auto;padding-inline:20px;padding-block:44px 64px}
+header{border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.1em;color:var(--accent);margin:0 0 7px}
+h1{font-size:25px;margin:0 0 10px;letter-spacing:-.01em}
+.meta{font-size:13px;color:var(--muted);margin:0}
+h2{font-size:17px;margin:36px 0 12px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600;font-size:13px;width:40%}
+td{font-variant-numeric:tabular-nums}
+@media (max-width:420px){ th{width:46%;font-size:12.5px} th,td{padding:9px 10px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="eyebrow">WOOHOO COMPANY</p>
+  <h1>회사 정보</h1>
+  <p class="meta">최종 수정 2026년 10월 13일</p>
+</header>
+
+<h2>사업자 정보</h2>
+<table>
+<tbody>
+<tr><th>상호</th><td>우후 컴퍼니 (WOOHOO COMPANY)</td></tr>
+<tr><th>대표자</th><td>이태훈</td></tr>
+<tr><th>사업장 주소</th><td>강원도 춘천시 석사길 17</td></tr>
+<tr><th>사업자등록번호</th><td>251-01-04241</td></tr>
+<tr><th>통신판매업 신고번호</th><td>제2026-강원춘천-0680호</td></tr>
+<tr><th>위치기반서비스사업 신고번호</th><td>5689-256145</td></tr>
+<tr><th>전화</th><td>010-9093-5673</td></tr>
+<tr><th>이메일</th><td>ksw2130@naver.com</td></tr>
+<tr><th>호스팅 제공자</th><td>우후 컴퍼니</td></tr>
+</tbody>
+</table>
+</div>
+</body>
+</html>

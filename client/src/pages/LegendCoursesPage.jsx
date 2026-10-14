@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import './admin.css';
 
 const API_BASE = 'http://localhost:4000';
@@ -10,7 +10,7 @@ function storedToken() {
 }
 
 function blankStop() {
-  return { where: '', name: '', desc: '' };
+  return { where: '', name: '', desc: '', addr: '' };
 }
 
 function emptyForm() {
@@ -45,7 +45,9 @@ function formFromCourse(course) {
       난이도: course.info?.난이도 || '',
       집결지: course.info?.집결지 || '',
     },
-    stops: course.stops?.length ? course.stops.map((stop) => ({ ...stop })) : [blankStop()],
+    stops: course.stops?.length
+      ? course.stops.map((stop) => ({ where: stop.where || '', name: stop.name || '', desc: stop.desc || '', addr: stop.addr || '' }))
+      : [blankStop()],
     storiesText: (course.stories || []).join('\n'),
   };
 }
@@ -73,6 +75,9 @@ function loadCloudinary() {
 
 function LegendCoursesPage() {
   const navigate = useNavigate();
+  const [params, setParams] = useSearchParams();
+  const courseId = params.get('course');
+  const previousCourseId = useRef(courseId);
   const widgetRef = useRef(null);
   const [allowed, setAllowed] = useState(false);
   const [courses, setCourses] = useState([]);
@@ -111,6 +116,14 @@ function LegendCoursesPage() {
       ignore = true;
     };
   }, [navigate]);
+
+  useEffect(() => {
+    if (previousCourseId.current && !courseId) setForm(emptyForm());
+    previousCourseId.current = courseId;
+    if (!courseId) return;
+    const found = courses.find((course) => course.id === courseId);
+    if (found) setForm(formFromCourse(found));
+  }, [courseId, courses]);
 
   useEffect(() => {
     return () => {
@@ -242,16 +255,23 @@ function LegendCoursesPage() {
       </header>
 
       <main className="admin-main admin-form-page">
-        <h1>전체 코스 등록</h1>
-        <p className="admin-lead">메인 페이지의 전설 코스를 고치거나 새로 등록합니다.</p>
+        <h1>{form.slug ? '코스 수정' : '코스 등록'}</h1>
+        <p className="admin-lead">등록된 전설 코스를 같은 항목으로 고치거나 새로 등록합니다. 저장하면 메인 페이지에 반영됩니다.</p>
+        <p><Link to="/admin/courses">코스 목록으로</Link></p>
 
         <div className="legend-picks">
           {courses.map((course) => (
-            <button key={course.id} type="button" onClick={() => setForm(formFromCourse(course))}>
+            <button key={course.id} type="button" onClick={() => setParams({ course: course.id })}>
               {course.title}
             </button>
           ))}
-          <button type="button" onClick={() => setForm(emptyForm())}>
+          <button
+            type="button"
+            onClick={() => {
+              setParams({});
+              setForm(emptyForm());
+            }}
+          >
             새 전설 코스
           </button>
         </div>
@@ -299,6 +319,7 @@ function LegendCoursesPage() {
                 <input name="where" value={stop.where} onChange={(event) => updateStop(index, event)} placeholder="장소" />
                 <input name="name" value={stop.name} onChange={(event) => updateStop(index, event)} placeholder="이야기 이름" />
                 <input name="desc" value={stop.desc} onChange={(event) => updateStop(index, event)} placeholder="설명" />
+                <input name="addr" value={stop.addr || ''} onChange={(event) => updateStop(index, event)} placeholder="주소" />
               </div>
             ))}
             <button

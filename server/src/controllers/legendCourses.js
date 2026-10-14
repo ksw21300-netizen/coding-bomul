@@ -1,5 +1,12 @@
-import { COURSES } from '../../../client/src/data/courses.js';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import LegendCourse from '../models/LegendCourse.js';
+
+const SEED_VERSION = 2;
+const LEGEND_SEED = JSON.parse(
+  readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), '../data/legendCourses.json'), 'utf8'),
+);
 
 function httpError(status, message) {
   const error = new Error(message);
@@ -52,8 +59,9 @@ function readBody(body) {
           where: text(stop?.where),
           name: text(stop?.name),
           desc: text(stop?.desc),
+          addr: text(stop?.addr),
         }))
-        .filter((stop) => stop.where || stop.name || stop.desc)
+        .filter((stop) => stop.where || stop.name || stop.desc || stop.addr)
     : [];
   const stories = Array.isArray(body.stories) ? body.stories.map((item) => text(item)).filter(Boolean) : [];
 
@@ -76,34 +84,69 @@ function readBody(body) {
   };
 }
 
-export async function seedLegendCourses() {
-  const count = await LegendCourse.countDocuments();
-  if (count > 0) return;
+function seedDoc(course) {
+  return {
+    slug: course.id,
+    region: course.region,
+    theme: course.theme,
+    title: course.title,
+    summary: course.summary,
+    thumb: course.thumb || '',
+    hero: course.hero || '',
+    map: course.map || '',
+    info: {
+      거리: course.info?.거리 || '',
+      소요시간: course.info?.소요시간 || '',
+      난이도: course.info?.난이도 || '',
+      집결지: course.info?.집결지 || '',
+    },
+    stops: course.stops ?? [],
+    stories: course.stories ?? [],
+    syncVersion: SEED_VERSION,
+  };
+}
 
-  await LegendCourse.insertMany(
-    COURSES.map((course) => ({
-      slug: course.id,
-      region: course.region,
-      theme: course.theme,
-      title: course.title,
-      summary: course.summary,
-      thumb: course.thumb || '',
-      hero: course.hero || '',
-      map: course.map || '',
-      info: {
-        거리: course.info?.거리 || '',
-        소요시간: course.info?.소요시간 || '',
-        난이도: course.info?.난이도 || '',
-        집결지: course.info?.집결지 || '',
-      },
-      stops: course.stops ?? [],
-      stories: course.stories ?? [],
-    })),
-  );
+async function removeDuplicateLegendCourses() {
+  const docs = await LegendCourse.find().select('slug syncVersion').lean();
+  const groups = new Map();
+  for (const doc of docs) {
+    const list = groups.get(doc.slug) || [];
+    list.push(doc);
+    groups.set(doc.slug, list);
+  }
+  const stale = [];
+  for (const list of groups.values()) {
+    if (list.length < 2) continue;
+    list.sort((a, b) => (b.syncVersion || 0) - (a.syncVersion || 0));
+    stale.push(...list.slice(1).map((doc) => doc._id));
+  }
+  if (stale.length) await LegendCourse.deleteMany({ _id: { $in: stale } });
+  await LegendCourse.syncIndexes();
+}
+
+export async function seedLegendCourses() {
+  await removeDuplicateLegendCourses();
+  const alreadySeeded = await LegendCourse.exists({ syncVersion: { $gte: SEED_VERSION } });
+  for (const course of LEGEND_SEED) {
+    const current = await LegendCourse.findOne({ slug: course.id });
+    if (!current) {
+      if (!alreadySeeded) await LegendCourse.create(seedDoc(course));
+      continue;
+    }
+    if ((current.syncVersion || 0) < SEED_VERSION) {
+      await LegendCourse.updateOne({ slug: course.id }, seedDoc(course));
+    }
+  }
 }
 
 export async function listLegendCourses(req, res) {
-  const courses = await LegendCourse.find().sort({ createdAt: 1 });
+  const courses = await LegendCourse.find();
+  const order = new Map(LEGEND_SEED.map((course, index) => [course.id, index]));
+  courses.sort((a, b) => {
+    const left = order.has(a.slug) ? order.get(a.slug) : 1000;
+    const right = order.has(b.slug) ? order.get(b.slug) : 1000;
+    return left - right || a.title.localeCompare(b.title, 'ko');
+  });
   res.json(courses.map(toPublic));
 }
 
@@ -128,4 +171,10 @@ export async function updateLegendCourse(req, res) {
   });
   if (!course) throw httpError(404, '코스를 찾을 수 없습니다.');
   res.json(toPublic(course));
+}
+
+export async function deleteLegendCourse(req, res) {
+  const course = await LegendCourse.findOneAndDelete({ slug: req.params.slug });
+  if (!course) throw httpError(404, '코스를 찾을 수 없습니다.');
+  res.json({ message: '코스를 삭제했습니다.' });
 }

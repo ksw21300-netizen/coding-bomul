@@ -5,7 +5,7 @@ import './admin.css';
 const API_BASE = 'http://localhost:4000';
 
 const ACTIONS = [
-  { id: 'course', label: '유료 코스 등록하기', icon: 'plus', to: '/admin/courses/new' },
+  { id: 'course', label: '유료 코스 등록하기', icon: 'plus', to: '/admin/legend-courses' },
   { id: 'manage', label: '코스 관리', icon: 'list', to: '/admin/courses' },
   { id: 'legend', label: '전체 코스 등록', icon: 'route', to: '/admin/legend-courses' },
   { id: 'stats', label: '코스현황 통계', icon: 'chart' },

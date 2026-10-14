@@ -23,7 +23,7 @@ function BomulLayout() {
       <footer>
         <div className="wrap">
           <div>보물 여행 · 역사와 설화를 찾아 떠나는 전설여행</div>
-          <div>예시 페이지 (프로토타입)</div>
+          <img className="company-logo" src="/img/woohoo-logo.png" alt="WOOHOO COMPANY" />
         </div>
       </footer>
     </div>

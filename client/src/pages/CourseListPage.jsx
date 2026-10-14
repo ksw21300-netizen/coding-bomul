@@ -3,14 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import './admin.css';
 
 const API_BASE = 'http://localhost:4000';
-const CATEGORIES = ['전체', '경주', '제주', '부여', '공주', '강원', '설악', '전라', '기타'];
 
 function storedToken() {
   return localStorage.getItem('token') || sessionStorage.getItem('token');
-}
-
-function formatPrice(price) {
-  return `${Number(price).toLocaleString('ko-KR')}원`;
 }
 
 function CourseListPage() {
@@ -19,7 +14,7 @@ function CourseListPage() {
   const [allowed, setAllowed] = useState(false);
   const [courses, setCourses] = useState([]);
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('전체');
+  const [region, setRegion] = useState('전체');
   const [filterOpen, setFilterOpen] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -28,7 +23,7 @@ function CourseListPage() {
     const token = storedToken();
     if (!token) {
       navigate('/', { replace: true });
-      return;
+      return undefined;
     }
 
     let ignore = false;
@@ -41,11 +36,11 @@ function CourseListPage() {
           return;
         }
         setAllowed(true);
-        const coursesResponse = await fetch(`${API_BASE}/api/courses`);
+        const coursesResponse = await fetch(`${API_BASE}/api/legend-courses`);
         const saved = coursesResponse.ok ? await coursesResponse.json() : null;
         if (ignore) return;
         if (Array.isArray(saved)) setCourses(saved);
-        else setError('코스 목록을 불러오지 못했습니다.');
+        else setError('전설 코스 목록을 불러오지 못했습니다.');
       })
       .catch(() => {
         if (!ignore) navigate('/', { replace: true });
@@ -71,13 +66,13 @@ function CourseListPage() {
   }, [filterOpen]);
 
   async function removeCourse(course) {
-    const ok = window.confirm(`「${course.name}」 코스를 삭제할까요?`);
+    const ok = window.confirm(`「${course.title}」 전설 코스를 삭제할까요?`);
     if (!ok) return;
 
     const token = storedToken();
     setError('');
     try {
-      const response = await fetch(`${API_BASE}/api/courses/${course._id}`, {
+      const response = await fetch(`${API_BASE}/api/legend-courses/${course.id}`, {
         method: 'DELETE',
         headers: { authorization: `Bearer ${token}` },
       });
@@ -86,7 +81,7 @@ function CourseListPage() {
         setError(body.message || '코스를 삭제하지 못했습니다.');
         return;
       }
-      setCourses((current) => current.filter((item) => item._id !== course._id));
+      setCourses((current) => current.filter((item) => item.id !== course.id));
     } catch {
       setError('서버에 연결하지 못했습니다. 서버가 실행 중인지 확인해 주세요.');
     }
@@ -94,11 +89,12 @@ function CourseListPage() {
 
   if (!allowed) return null;
 
+  const regions = ['전체', ...new Set(courses.map((course) => course.region).filter(Boolean))];
   const keyword = query.trim().toLowerCase();
   const visible = courses.filter((course) => {
-    const matchesName = course.name.toLowerCase().includes(keyword);
-    const matchesCategory = category === '전체' || course.category === category;
-    return matchesName && matchesCategory;
+    const matchesName = `${course.title} ${course.summary}`.toLowerCase().includes(keyword);
+    const matchesRegion = region === '전체' || course.region === region;
+    return matchesName && matchesRegion;
   });
 
   return (
@@ -114,14 +110,14 @@ function CourseListPage() {
       <main className="admin-main admin-course-page">
         <div className="admin-course-head">
           <h1>코스 관리</h1>
-          <Link className="admin-course-new" to="/admin/courses/new">
+          <Link className="admin-course-new" to="/admin/legend-courses">
             + 새 코스 등록
           </Link>
         </div>
 
         <div className="admin-course-tabs">
-          <span className="is-on">코스 목록</span>
-          <Link to="/admin/courses/new">코스 등록</Link>
+          <span className="is-on">전설 코스 목록</span>
+          <Link to="/admin/legend-courses">코스 등록</Link>
         </div>
 
         <div className="admin-course-tools">
@@ -135,18 +131,18 @@ function CourseListPage() {
           </label>
           <div className="admin-course-filter" ref={filterRef}>
             <button type="button" aria-expanded={filterOpen} onClick={() => setFilterOpen((open) => !open)}>
-              필터{category === '전체' ? '' : ` · ${category}`}
+              필터{region === '전체' ? '' : ` · ${region}`}
             </button>
             {filterOpen ? (
-              <div className="admin-course-filter-menu" role="listbox" aria-label="카테고리">
-                {CATEGORIES.map((name) => (
+              <div className="admin-course-filter-menu" role="listbox" aria-label="지역">
+                {regions.map((name) => (
                   <button
                     key={name}
                     type="button"
                     role="option"
-                    aria-selected={name === category}
+                    aria-selected={name === region}
                     onClick={() => {
-                      setCategory(name);
+                      setRegion(name);
                       setFilterOpen(false);
                     }}
                   >
@@ -170,8 +166,8 @@ function CourseListPage() {
               <tr>
                 <th>이미지</th>
                 <th>코스</th>
-                <th>카테고리</th>
-                <th>가격</th>
+                <th>지역</th>
+                <th>테마</th>
                 <th>액션</th>
               </tr>
             </thead>
@@ -185,39 +181,44 @@ function CourseListPage() {
               ) : visible.length === 0 ? (
                 <tr>
                   <td className="admin-course-empty" colSpan={5}>
-                    {courses.length === 0 ? '등록된 코스가 없습니다.' : '검색 결과가 없습니다.'}
+                    {courses.length === 0 ? '등록된 전설 코스가 없습니다.' : '검색 결과가 없습니다.'}
                   </td>
                 </tr>
               ) : (
                 visible.map((course) => (
-                  <tr key={course._id}>
+                  <tr key={course.id}>
                     <td>
-                      <img src={course.image} alt="" />
+                      {course.thumb || course.hero ? <img src={course.thumb || course.hero} alt="" /> : <span className="admin-course-blank" />}
                     </td>
                     <td className="admin-course-name">
-                      <strong>{course.name}</strong>
-                      <p>{course.description}</p>
+                      <strong>{course.title}</strong>
+                      <p>{course.summary}</p>
                     </td>
-                    <td>{course.category}</td>
-                    <td>{formatPrice(course.price)}</td>
+                    <td>{course.region}</td>
+                    <td>{course.theme}</td>
                     <td>
-                      <button
-                        type="button"
-                        className="admin-course-delete"
-                        aria-label={`${course.name} 삭제`}
-                        onClick={() => removeCourse(course)}
-                      >
-                        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                          <path
-                            d="M5 7h14M9 7V5h6v2M8 7l.8 12h6.4L16 7"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.8"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
+                      <div className="admin-course-actions">
+                        <Link className="admin-course-edit" to={`/admin/legend-courses?course=${course.id}`}>
+                          수정
+                        </Link>
+                        <button
+                          type="button"
+                          className="admin-course-delete"
+                          aria-label={`${course.title} 삭제`}
+                          onClick={() => removeCourse(course)}
+                        >
+                          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                            <path
+                              d="M5 7h14M9 7V5h6v2M8 7l.8 12h6.4L16 7"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.8"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

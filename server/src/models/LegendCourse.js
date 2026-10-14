@@ -5,6 +5,7 @@ const stopSchema = new mongoose.Schema(
     where: { type: String, default: '', trim: true },
     name: { type: String, default: '', trim: true },
     desc: { type: String, default: '', trim: true },
+    addr: { type: String, default: '', trim: true },
   },
   { _id: false },
 );
@@ -27,6 +28,7 @@ const legendCourseSchema = new mongoose.Schema(
     },
     stops: { type: [stopSchema], default: [] },
     stories: { type: [String], default: [] },
+    syncVersion: { type: Number, default: 0 },
   },
   { timestamps: true },
 );

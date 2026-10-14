@@ -4,6 +4,7 @@ import applicationsRouter from './routes/applications.js';
 import cartsRouter from './routes/carts.js';
 import coursesRouter from './routes/courses.js';
 import legendCoursesRouter from './routes/legendCourses.js';
+import membershipsRouter from './routes/memberships.js';
 import ordersRouter from './routes/orders.js';
 import authRouter from './routes/auth.js';
 import meRouter from './routes/me.js';
@@ -52,6 +53,7 @@ app.use('/api/applications', applicationsRouter);
 app.use('/api/courses', coursesRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/orders', ordersRouter);
+app.use('/api/membership', membershipsRouter);
 app.use('/api/legend-courses', legendCoursesRouter);
 
 app.get('/api/cloudinary', (req, res) => {

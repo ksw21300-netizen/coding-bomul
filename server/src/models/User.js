@@ -79,6 +79,14 @@ const userSchema = new mongoose.Schema(
       unique: true,
       sparse: true,
     },
+    membership: {
+      active: { type: Boolean, default: false },
+      purchased_at: { type: Date },
+      payment_method: {
+        type: String,
+        enum: ['신용카드', '계좌이체', '네이버페이'],
+      },
+    },
   },
   { timestamps: true },
 );
